@@ -1,12 +1,13 @@
 # react-weather-map
 
-![Alt text](images/home.PNG?raw=true "Home")
-
-![Alt text](images/info.PNG?raw=true "Title")
-
 This is a simple react App that ask the user to enter a city and output the current temperature and humidity at this place.
 
 The app is using the open weather map api: https://openweathermap.org/
+
+<div>
+  <img src="images/home.PNG?raw=true" alt="" title="Home" style="width: 40%;">
+  <img src="images/info.PNG?raw=true" alt="" title="Info" style="width: 40%;">
+</div>
 
 # Requirements
 
