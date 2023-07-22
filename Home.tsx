@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
         paddingRight: vw(10),
     },
     title: {
-        // fontFamily: "Roboto",
         color: PRIMARY_COLOR,
         fontSize: 70,
         fontWeight: "bold",

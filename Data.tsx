@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View, Pressable, TouchableOpacity, Platform, StatusBar } from 'react-native';
-import { WeatherData } from './api';
+import { UNITS, WeatherData } from './api';
 import { Dimensions } from 'react-native'
 
 import { Feather } from '@expo/vector-icons'; 
@@ -11,6 +11,19 @@ export default function Data({navigation, route}) {
     const data: WeatherData = route.params.data;
     const [showTipTemp, setTipTemp] = useState(false);
     const [showTipHumidity, setTipHumidity] = useState(false);
+
+    let symbol = "°C";
+    switch (UNITS) {
+        case "metric":
+            symbol = "°C";
+            break;
+        case "imperial":
+            symbol = "°F";
+            break;
+        case "standard":
+            symbol = "K";
+            break;
+    }
 
     return (
         <View style={styles.container}>
@@ -42,9 +55,9 @@ export default function Data({navigation, route}) {
                             onPress={() => setTipTemp(true)}
                         >
                             <View style={styles.card}>
-                                <Feather name="thermometer" size={24} color="black" />
-                                <Text>
-                                    { `${data.main.temp}°C`}
+                                <Feather name="thermometer" size={24} color="white" />
+                                <Text style={{color: "white"}}>
+                                    { `${data.main.temp}${symbol}`}
                                 </Text>
                             </View>
                         </TouchableOpacity>
@@ -63,8 +76,8 @@ export default function Data({navigation, route}) {
                             onPress={() => setTipHumidity(true)}
                         >
                             <View style={styles.card}>
-                                <Feather name="droplet" size={24} color="black" />
-                                <Text>
+                                <Feather name="droplet" size={24} color="white" />
+                                <Text style={{color: "white"}}>
                                     { `${data.main.humidity}%`}
                                 </Text>
                             </View>
@@ -79,7 +92,7 @@ export default function Data({navigation, route}) {
 const styles = StyleSheet.create({
     title: {
         color: PRIMARY_COLOR,
-        fontSize: 30,
+        fontSize: 50,
         textAlign: "center",
     },
     container: {
@@ -114,7 +127,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         flexDirection: "row",
-        justifyContent: "space-around",
+        justifyContent: "space-evenly",
         width: "100%",
         paddingTop: 30,
         paddingBottom: 30,
