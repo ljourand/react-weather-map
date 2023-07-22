@@ -1,4 +1,4 @@
-const LANG: string = "en";
+const LANG: string = "fr";
 const UNITS: string = "metric";
 const API_KEY: string = "YOUR_API_KEY";
 
@@ -28,5 +28,3 @@ export function getWeatherOfCity(cityName: string): Promise<WeatherData> {
         })
     })
 }
-
-export const CONFIG = { LANG, UNITS }

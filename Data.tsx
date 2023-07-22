@@ -1,51 +1,76 @@
 import React, { useState } from 'react'
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
-import { WeatherData, CONFIG } from './api';
+import { StyleSheet, Text, View, Pressable, TouchableOpacity, Platform, StatusBar } from 'react-native';
+import { WeatherData } from './api';
 import { Dimensions } from 'react-native'
-import GradientText from './GradientText';
 
-function getWeatherPrompt(weather: WeatherData | null): string {
-    if (!weather) {
-      return "";
-    }
-    const cityName = weather.name;
-    const temperature = weather.main.temp;
-    const humidity = weather.main.humidity;
-    let unit = "°C";
-    switch (CONFIG.UNITS) {
-      case "standard":
-        unit = "K";
-        break;
-      case "imperial":
-        unit = "°F"
-        break;
-      case "metric":
-        unit = "°C"
-        break;
-    }
-    return (`A ${cityName} la température est de ${temperature}${unit} est l'humidité est de ${humidity}%.`)
-  }
+import { Feather } from '@expo/vector-icons'; 
+import Tooltip from "react-native-walkthrough-tooltip";
+import { BACKGROUND_COLOR, PRIMARY_COLOR } from './colors';
 
 export default function Data({navigation, route}) {
     const data: WeatherData = route.params.data;
+    const [showTipTemp, setTipTemp] = useState(false);
+    const [showTipHumidity, setTipHumidity] = useState(false);
 
     return (
         <View style={styles.container}>
             <Pressable
                 onPress={() => {
-                    navigation.navigate("home");
+                    navigation.goBack();
                 }}
             >
-                <Text style={styles.backButton}>go back</Text>
+                <Text style={styles.backButton}>
+                    Retour
+                </Text>
             </Pressable>
             <View style={styles.page}>
-                <GradientText colors={['#C3AB11', '#EFDA52']} style={styles.title}>
+                <Text style={styles.title}>
                     {data.name}
-                </GradientText>
-                {/* <Text style={styles.title}>{data.name}</Text> */}
-                <Text style={{color: "white"}}>{getWeatherPrompt(data)}</Text>
-                <StatusBar style="auto" />
+                </Text>
+                <View style={styles.info}>
+                    <Tooltip
+                        isVisible={showTipTemp}
+                        content={
+                            <Text> Température </Text>
+                        }
+                        onClose={() => setTipTemp(false)}
+                        placement="bottom"
+                        topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
+                    >
+                        <TouchableOpacity
+                            style={styles.touchable}
+                            onPress={() => setTipTemp(true)}
+                        >
+                            <View style={styles.card}>
+                                <Feather name="thermometer" size={24} color="black" />
+                                <Text>
+                                    { `${data.main.temp}°C`}
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                    </Tooltip>
+                    <Tooltip
+                        isVisible={showTipHumidity}
+                        content={
+                            <Text> Humidité </Text>
+                        }
+                        onClose={() => setTipHumidity(false)}
+                        placement="bottom"
+                        topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
+                    >
+                        <TouchableOpacity
+                            style={styles.touchable}
+                            onPress={() => setTipHumidity(true)}
+                        >
+                            <View style={styles.card}>
+                                <Feather name="droplet" size={24} color="black" />
+                                <Text>
+                                    { `${data.main.humidity}%`}
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                    </Tooltip>
+                </View>
             </View>
         </View>
     );
@@ -53,14 +78,13 @@ export default function Data({navigation, route}) {
 
 const styles = StyleSheet.create({
     title: {
-        color: "yellow",
+        color: PRIMARY_COLOR,
         fontSize: 30,
-        textAlign: "center"
+        textAlign: "center",
     },
     container: {
         flex: 1,
-        backgroundColor: '#2A2A2A',
-        // alignItems: 'center',
+        backgroundColor: BACKGROUND_COLOR,
         justifyContent: 'center',
         paddingTop: 50,
         padding: 20
@@ -75,6 +99,27 @@ const styles = StyleSheet.create({
         paddingRight: Dimensions.get("window").width * 0.1,
     },
     backButton: {
-        color: "white",
+        color: "#D5B626",
+    },
+    info: {
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: Dimensions.get("window").width * 0.8,
+    },
+    card: {
+        backgroundColor: "rgba(255,255,255,0.2)",
+        borderRadius: 10,
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        width: "100%",
+        paddingTop: 30,
+        paddingBottom: 30,
+    },
+    touchable: {
+        width: Dimensions.get("window").width * 0.4 - 10
     }
 });

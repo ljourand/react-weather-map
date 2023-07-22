@@ -4,70 +4,74 @@ import { StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
 import { getWeatherOfCity } from './api';
 import { Dimensions } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient';
-import GradientText from './GradientText';
+
+import { vw, vh } from 'react-native-expo-viewport-units';
+import { BACKGROUND_COLOR, GRADIENT_1_COLOR, GRADIENT_2_COLOR, PRIMARY_COLOR } from './colors';
 
 export default function Home({navigation}) {
-  const [text, setText] = useState('');
-  const [errorMsg, setErrorMsg] = useState(null);
+    const [text, setText] = useState('');
+    const [errorMsg, setErrorMsg] = useState(null);
 
-  return (
-    <View style={styles.container}>
-        <View style={styles.page}>
-            <GradientText colors={['#C3AB11', '#EFDA52']} style={styles.title}>
-                MÉTÉO APP
-            </GradientText>
-            <TextInput
-                style={styles.cityInput}
-                placeholder="Entre une ville"
-                onChangeText={newText => setText(newText)}
-                defaultValue={text}
-            />
-            <LinearGradient
-                colors={['#C3AB11', '#EFDA52']}
-                start={{x: 1, y: 0}}
-                end={{x: 0, y: 0.1}}
-                style={{borderRadius: 5}}
-            >
-                <Pressable
-                    onPress={() => {
-                        getWeatherOfCity(text).then((data) => {
-                            navigation.navigate('data', {data: data})
-                        })
-                        .catch((error) => {
-                            setErrorMsg(error.message);
-                        })
-                    }}
-                    style={styles.buttonApi}
+    return (
+        <View style={styles.container}>
+            <View style={styles.page}>
+                <Text style={styles.title}>
+                    MÉTÉO APP
+                </Text>
+                <TextInput
+                    style={styles.cityInput}
+                    placeholder="Entre une ville"
+                    onChangeText={newText => setText(newText)}
+                    defaultValue={text}
+                />
+                <LinearGradient
+                    colors={[GRADIENT_1_COLOR, GRADIENT_2_COLOR]}
+                    start={{x: 1, y: -1}}
+                    end={{x: 0, y: 0}}
+                    style={{borderRadius: 5}}
                 >
-                    <Text style={{fontWeight: "bold"}}>quel temps fait-il ?</Text>
-                </Pressable>
-            </LinearGradient>
-            <Text style={styles.errorText}>{errorMsg}</Text>
-            <StatusBar style="auto" />
+                    <Pressable
+                        onPress={() => {
+                            getWeatherOfCity(text).then((data) => {
+                                setErrorMsg(null);
+                                setText('');
+                                navigation.navigate('data', {data: data})
+                            })
+                            .catch((error) => {
+                                setErrorMsg(error.message);
+                            })
+                        }}
+                        style={styles.buttonApi}
+                    >
+                        <Text style={{fontWeight: "bold", fontSize: 15}}>QUEL TEMPS FAIT-IL ?</Text>
+                    </Pressable>
+                </LinearGradient>
+                <Text style={styles.errorText}>{errorMsg}</Text>
+                <StatusBar style="auto" />
+            </View>
         </View>
-    </View>
-  );
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#2A2A2A',
+        backgroundColor: BACKGROUND_COLOR,
         alignItems: 'center',
         justifyContent: 'center',
     },
     page: {
         flex: 1,
-        justifyContent: 'space-around',
+        gap: vh(5),
         alignItems: 'center',
-        paddingTop: Dimensions.get("window").height * 0.2,
-        paddingBottom: Dimensions.get("window").height * 0.2,
-        paddingLeft: Dimensions.get("window").width * 0.1,
-        paddingRight: Dimensions.get("window").width * 0.1,
+        height: vh(100),
+        paddingTop: vh(15),
+        paddingLeft: vw(10),
+        paddingRight: vw(10),
     },
     title: {
-        fontFamily: "Roboto",
-        color: "yellow",
+        // fontFamily: "Roboto",
+        color: PRIMARY_COLOR,
         fontSize: 70,
         fontWeight: "bold",
         textAlign: "center"
